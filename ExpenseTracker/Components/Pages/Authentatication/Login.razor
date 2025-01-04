@@ -1,0 +1,110 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+@using ExpenseTracker.Models
+
+<div class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-gray-200 w-3/4 md:w-2/3 flex rounded-lg overflow-hidden">
+        <!-- Left Section -->
+        <div class="w-full md:w-1/2 p-8">
+            <h1 class="text-2xl font-bold text-gray-800">WELCOME</h1>
+            <p class="text-gray-600 mt-1 mb-6">
+                Welcome! Please enter your details.
+            </p>
+            <!-- Form -->
+            <form @onsubmit="HandleLogin">
+                <div class="mb-4">
+                    <label for="email"
+                           class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                    <input type="email"
+                           id="email"
+                           @bind="user.Email"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="Enter your email" />
+                </div>
+                <div class="mb-4">
+                    <label for="password"
+                           class="block text-sm font-medium text-gray-600 mb-1">Password</label>
+                    <input type="password"
+                           id="password"
+                           @bind="user.Password"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="********" />
+                </div>
+                <div class="flex items-center justify-between mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox"
+                               class="text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 rounded" />
+                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                </div>
+                <button type="submit"
+                        class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Sign In
+                </button>
+            </form>
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <p class="mt-4 text-red-500 text-sm">@Message</p>
+            }
+            <p class="mt-4 text-sm text-gray-600 text-center">
+                Don't have an account?
+                <NavLink href="/register" class="text-blue-500 hover:underline">Register</NavLink>
+            </p>
+        </div>
+        <!-- Right Section -->
+        <div class="hidden md:block w-1/2 p-6">
+            <img src="https://via.placeholder.com/400"
+                 alt="Illustration"
+                 class="w-full h-full object-cover" />
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserModel user = new UserModel();
+    private string Message = string.Empty;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            // Get the path to the users.json file
+            var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExpenseTracker");
+            var filePath = Path.Combine(appDataDir, "users.json");
+
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                Message = "No users found. Please register first.";
+                return;
+            }
+
+            // Read and deserialize the file
+            var json = await File.ReadAllTextAsync(filePath);
+            var users = System.Text.Json.JsonSerializer.Deserialize<List<UserModel>>(json);
+
+            if (users == null || !users.Any())
+            {
+                Message = "No users found. Please register first.";
+                return;
+            }
+
+            // Find the user by email and password
+            var existingUser = users.FirstOrDefault(u => u.Email == user.Email && u.Password == user.Password);
+
+            if (existingUser != null)
+            {
+                // Navigate to dashboard if login is successful
+                NavigationManager.NavigateTo("/dashboard");
+            }
+            else
+            {
+                Message = "Invalid email or password. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = $"Error: {ex.Message}";
+        }
+    }
+}

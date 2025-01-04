@@ -1,0 +1,43 @@
+﻿@page "/dashboard"
+@using ExpenseTracker.Components.Pages.MainPage.NavBar
+@using ExpenseTracker.Components.Pages.MainPage.SideBar
+
+<div>
+    <SideBar/>
+    <NavBar/>
+    <div class="pt-[130px] pl-[300px] pr-5">
+
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-3 gap-6 mb-8">
+            <!-- Cash Inflows -->
+            <div class="bg-gradient-to-r from-green-300 to-green-500 text-white rounded-lg p-4 shadow">
+                <h2 class="text-lg font-medium">Cash Inflows</h2>
+                <p class="text-2xl font-bold">$120</p>
+                <p class="text-sm">0</p>
+            </div>
+
+            <!-- Cash Outflows -->
+            <div class="bg-gradient-to-r from-gray-300 to-gray-500 text-white rounded-lg p-4 shadow">
+                <h2 class="text-lg font-medium">Cash Outflows</h2>
+                <p class="text-2xl font-bold">$30</p>
+                <p class="text-sm">0</p>
+            </div>
+
+            <!-- Debits -->
+            <div class="bg-gradient-to-r from-gray-300 to-gray-500 text-white rounded-lg p-4 shadow">
+                <h2 class="text-lg font-medium">Debits</h2>
+                <p class="text-2xl font-bold">$0</p>
+                <p class="text-sm">0</p>
+            </div>
+        </div>
+
+        <!-- Transition Overview -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-medium mb-4">Transition Overview</h2>
+            <!-- Placeholder for graph -->
+            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                <p class="text-gray-500">Graph Placeholder</p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+﻿@page "/register"
+@using ExpenseTracker.Models
+@inject NavigationManager Navigation
+
+<div class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="flex bg-white shadow-lg rounded-lg overflow-hidden w-4/5 lg:w-2/3">
+        <!-- Left Section (Form) -->
+        <div class="w-full lg:w-1/2 p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome</h2>
+            <p class="text-sm text-gray-600 mb-6">
+                Please fill out the form below to create an account.
+            </p>
+            <EditForm Model="newUser" OnValidSubmit="RegisterUser">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
+                    <input type="text"
+                           id="name"
+                           @bind="newUser.User"
+                           placeholder="Enter your name"
+                           class="w-full border border-gray-300 rounded mt-1 p-2" />
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
+                    <input type="email"
+                           id="email"
+                           @bind="newUser.Email"
+                           placeholder="Enter your email"
+                           class="w-full border border-gray-300 rounded mt-1 p-2" />
+                </div>
+                <div class="mb-4">
+                    <label for="currency"
+                           class="block text-sm font-medium text-gray-600">Currency Type</label>
+                    <select id="currency"
+                            @bind="newUser.Currency"
+                            class="w-full border border-gray-300 rounded mt-1 p-2 bg-white">
+                        <option value="nrs">NRS - Nepalese Rupees</option>
+                        <option value="usd">USD - US Dollar</option>
+                        <option value="eur">EUR - Euro</option>
+                        <option value="gbp">GBP - British Pound</option>
+                        <option value="inr">INR - Indian Rupee</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="password"
+                           class="block text-sm font-medium text-gray-600">Password</label>
+                    <input type="password"
+                           id="password"
+                           @bind="newUser.Password"
+                           placeholder="Enter your password"
+                           class="w-full border border-gray-300 rounded mt-1 p-2" />
+                </div>
+                <div class="mb-4 flex items-center">
+                    <input type="checkbox" id="terms" class="mr-2" />
+                    <label for="terms" class="text-sm text-gray-600">I agree to the terms and conditions</label>
+                </div>
+                <button type="submit"
+                        class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    Register
+                </button>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <p class="text-red-500 mt-4">@Message</p>
+            }
+
+            <p class="text-sm text-gray-600 mt-4 text-center">
+                Already have an account?
+                <NavLink href="/" class="text-blue-500 hover:underline">Sign In</NavLink>
+            </p>
+        </div>
+
+        <!-- Right Section (Image/Illustration) -->
+        <div class="hidden lg:flex w-1/2 bg-gray-200 items-center justify-center">
+            <img src="https://via.placeholder.com/400x300"
+                 alt="Register Illustration"
+                 class="w-3/4 h-auto" />
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserModel newUser = new UserModel();
+    private string Message;
+
+
+    private async Task RegisterUser()
+    {
+        try
+        {
+            var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExpenseTracker");
+            if (!Directory.Exists(appDataDir))
+            {
+                Directory.CreateDirectory(appDataDir);
+            }
+
+            var filePath = Path.Combine(appDataDir, "users.json");
+           
+            List<UserModel> users = new List<UserModel>();
+
+            if (File.Exists(filePath))
+            {
+                var json = await File.ReadAllTextAsync(filePath);
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    users = System.Text.Json.JsonSerializer.Deserialize<List<UserModel>>(json);
+                }
+            }
+
+            var existingUser = users.FirstOrDefault(u => u.User.Equals(newUser.User, StringComparison.OrdinalIgnoreCase));
+            if (existingUser != null)
+            {
+                Message = "Username already exists. Please choose a different one.";
+                return;
+            }
+
+            users.Add(newUser);
+
+            var updatedJson = System.Text.Json.JsonSerializer.Serialize(users, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            await File.WriteAllTextAsync(filePath, updatedJson);
+
+            Message = "Registration successful!";
+
+            // Navigate to login page after successful registration
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Message = $"Error: {ex.Message}";
+        }
+    }
+}
