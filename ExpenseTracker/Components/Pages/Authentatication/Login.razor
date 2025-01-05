@@ -1,6 +1,6 @@
 ﻿@page "/"
-@inject NavigationManager NavigationManager
 @using ExpenseTracker.Models
+@inject NavigationManager NavigationManager
 
 <div class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="bg-gray-200 w-3/4 md:w-2/3 flex rounded-lg overflow-hidden">
@@ -11,22 +11,22 @@
                 Welcome! Please enter your details.
             </p>
             <!-- Form -->
-            <form @onsubmit="HandleLogin">
+            <EditForm Model="loginDetails" OnValidSubmit="HandleLogin">
                 <div class="mb-4">
-                    <label for="email"
-                           class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-                    <input type="email"
-                           id="email"
-                           @bind="user.Email"
+                    <label for="username"
+                           class="block text-sm font-medium text-gray-600 mb-1">Username</label>
+                    <input type="text"
+                           id="username"
+                           @bind="loginDetails.UserName"
                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your email" />
+                           placeholder="Enter your username" />
                 </div>
                 <div class="mb-4">
                     <label for="password"
                            class="block text-sm font-medium text-gray-600 mb-1">Password</label>
                     <input type="password"
                            id="password"
-                           @bind="user.Password"
+                           @bind="loginDetails.Password"
                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="********" />
                 </div>
@@ -41,7 +41,7 @@
                         class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
                     Sign In
                 </button>
-            </form>
+            </EditForm>
             @if (!string.IsNullOrEmpty(Message))
             {
                 <p class="mt-4 text-red-500 text-sm">@Message</p>
@@ -61,50 +61,25 @@
 </div>
 
 @code {
-    private UserModel user = new UserModel();
+    private UserModel loginDetails = new UserModel();
     private string Message = string.Empty;
 
     private async Task HandleLogin()
     {
         try
         {
-            // Get the path to the users.json file
-            var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExpenseTracker");
-            var filePath = Path.Combine(appDataDir, "users.json");
+            // Authenticate using the UserService
+            UserModel authenticatedUser = UserService.Login(loginDetails.UserName, loginDetails.Password);
 
-            // Check if the file exists
-            if (!File.Exists(filePath))
-            {
-                Message = "No users found. Please register first.";
-                return;
-            }
+            // Save the authenticated user to GlobalState (if applicable)
+            GlobalState globalState = new GlobalState { CurrentUser = authenticatedUser };
 
-            // Read and deserialize the file
-            var json = await File.ReadAllTextAsync(filePath);
-            var users = System.Text.Json.JsonSerializer.Deserialize<List<UserModel>>(json);
-
-            if (users == null || !users.Any())
-            {
-                Message = "No users found. Please register first.";
-                return;
-            }
-
-            // Find the user by email and password
-            var existingUser = users.FirstOrDefault(u => u.Email == user.Email && u.Password == user.Password);
-
-            if (existingUser != null)
-            {
-                // Navigate to dashboard if login is successful
-                NavigationManager.NavigateTo("/dashboard");
-            }
-            else
-            {
-                Message = "Invalid email or password. Please try again.";
-            }
+            // Navigate to dashboard after successful login
+            NavigationManager.NavigateTo("/dashboard");
         }
         catch (Exception ex)
         {
-            Message = $"Error: {ex.Message}";
+            Message = ex.Message; // Show error message if login fails
         }
     }
 }

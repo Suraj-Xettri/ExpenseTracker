@@ -11,14 +11,11 @@
                 Please fill out the form below to create an account.
             </p>
             <EditForm Model="newUser" OnValidSubmit="RegisterUser">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
                     <input type="text"
                            id="name"
-                           @bind="newUser.User"
+                           @bind="newUser.UserName"
                            placeholder="Enter your name"
                            class="w-full border border-gray-300 rounded mt-1 p-2" />
                 </div>
@@ -52,10 +49,6 @@
                            placeholder="Enter your password"
                            class="w-full border border-gray-300 rounded mt-1 p-2" />
                 </div>
-                <div class="mb-4 flex items-center">
-                    <input type="checkbox" id="terms" class="mr-2" />
-                    <label for="terms" class="text-sm text-gray-600">I agree to the terms and conditions</label>
-                </div>
                 <button type="submit"
                         class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
                     Register
@@ -86,50 +79,28 @@
     private UserModel newUser = new UserModel();
     private string Message;
 
-
     private async Task RegisterUser()
     {
         try
         {
-            var appDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ExpenseTracker");
-            if (!Directory.Exists(appDataDir))
-            {
-                Directory.CreateDirectory(appDataDir);
-            }
-
-            var filePath = Path.Combine(appDataDir, "users.json");
-           
-            List<UserModel> users = new List<UserModel>();
-
-            if (File.Exists(filePath))
-            {
-                var json = await File.ReadAllTextAsync(filePath);
-                if (!string.IsNullOrWhiteSpace(json))
-                {
-                    users = System.Text.Json.JsonSerializer.Deserialize<List<UserModel>>(json);
-                }
-            }
-
-            var existingUser = users.FirstOrDefault(u => u.User.Equals(newUser.User, StringComparison.OrdinalIgnoreCase));
-            if (existingUser != null)
-            {
-                Message = "Username already exists. Please choose a different one.";
-                return;
-            }
-
-            users.Add(newUser);
-
-            var updatedJson = System.Text.Json.JsonSerializer.Serialize(users, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(filePath, updatedJson);
+            // Use UserService to handle user registration
+            UserService.Create(
+                Guid.NewGuid(),
+                newUser.UserName,
+                newUser.Password,
+                newUser.Email,
+                newUser.Currency
+            );
 
             Message = "Registration successful!";
+            await Task.Delay(1000); // Optional: Delay to show success message
 
             // Navigate to login page after successful registration
             Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            Message = $"Error: {ex.Message}";
+            Message = ex.Message; // Display error message (e.g., username already exists)
         }
     }
 }
