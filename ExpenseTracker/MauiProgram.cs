@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-
+using ExpenseTracker.Models;
 namespace ExpenseTracker
 {
     public static class MauiProgram
@@ -16,8 +16,11 @@ namespace ExpenseTracker
 
             builder.Services.AddMauiBlazorWebView();
 
+            // Register GlobalState as a Singleton
+            builder.Services.AddSingleton<GlobalState>();
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 

@@ -1,6 +1,18 @@
-﻿<div class="w-screen h-[90px] bg-white flex justify-end border-b items-center p-5 z-10 fixed">
+﻿@inject ExpenseTracker.Models.GlobalState GlobalState
+
+<div class="w-screen h-[90px] bg-white flex justify-end border-b items-center p-5 z-10 fixed">
     <div class="flex items-center mr-10">
-        <span class="text-gray-600 mr-2">Welcome, <span class="font-bold text-red-500">Suraj</span></span>
+        @if (GlobalState.GetCurrentUser() != null)
+        {
+            <span class="text-gray-600 mr-2">
+                Welcome,
+                <span class="font-bold text-red-500"> @GlobalState.GetCurrentUser().UserName </span>
+            </span>
+        }
+        else
+        {
+            <span class="text-gray-600 mr-2">Welcome, Guest</span>
+        }
         <div class="w-8 h-8 bg-red-500 rounded-full"></div>
     </div>
 </div>

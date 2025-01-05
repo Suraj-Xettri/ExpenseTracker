@@ -4,6 +4,8 @@ namespace ExpenseTracker.Models;
 
 public static class UserService
 {
+    private static GlobalState _globalState = new GlobalState(); // You can pass this instance globally in your app
+
     private static void SaveUser(List<UserModel> users)
     {
         string appDataDirectoryPath = Utils.GetAppDirectoryPath();
@@ -78,7 +80,8 @@ public static class UserService
         {
             throw new Exception(loginErrorMessage);
         }
-
+        // Set the current user globally
+        _globalState.SetCurrentUser(user);
         return user;
     }
 
