@@ -1,9 +1,67 @@
 ﻿@page "/transation"
+@using ExpenseTracker.Models
 @using ExpenseTracker.Components.Pages.MainPage.SideBar
 @using ExpenseTracker.Components.Pages.MainPage.NavBar
 
 <div>
     <SideBar />
     <NavBar />
+    <div class="pt-[130px] pl-[300px] pr-5">
+        <div>
+            <h3>Dashboard</h3>
+        </div>
+        <div class="bg-white shadow rounded-lg p-6">
+            <div class="mb-4 flex justify-between items-center">
+                <h3 class="text-gray-700 font-semibold">All</h3>
+                <div class="text-gray-500">▼</div>
+            </div>
+            <ul class="space-y-4">
+                <!-- Transaction Item -->
+                <li class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-pink-200 text-pink-600 w-10 h-10 rounded-full flex justify-center items-center font-bold">G</div>
+                        <div class="ml-4">
+                            <p class="font-medium text-gray-700">Groceries</p>
+                            <p class="text-gray-500 text-sm">Yesterday at 16:34</p>
+                        </div>
+                    </div>
+                    <p class="text-red-500 font-bold">-120£</p>
+                </li>
+                <!-- Another Transaction Item -->
+                <li class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-pink-200 text-pink-600 w-10 h-10 rounded-full flex justify-center items-center font-bold">G</div>
+                        <div class="ml-4">
+                            <p class="font-medium text-gray-700">Gas</p>
+                            <p class="text-gray-500 text-sm">Yesterday at 13:03</p>
+                        </div>
+                    </div>
+                    <p class="text-red-500 font-bold">-220£</p>
+                </li>
+                <!-- Another Transaction Item -->
+                <li class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-green-200 text-green-600 w-10 h-10 rounded-full flex justify-center items-center font-bold">S</div>
+                        <div class="ml-4">
+                            <p class="font-medium text-gray-700">Sneaker Sales</p>
+                            <p class="text-gray-500 text-sm">Yesterday at 16:34</p>
+                        </div>
+                    </div>
+                    <p class="text-green-500 font-bold">+859£</p>
+                </li>
+                <!-- Another Transaction Item -->
+                <li class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-pink-200 text-pink-600 w-10 h-10 rounded-full flex justify-center items-center font-bold">G</div>
+                        <div class="ml-4">
+                            <p class="font-medium text-gray-700">Gym</p>
+                            <p class="text-gray-500 text-sm">Yesterday at 14:20</p>
+                        </div>
+                    </div>
+                    <p class="text-red-500 font-bold">-50£</p>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 

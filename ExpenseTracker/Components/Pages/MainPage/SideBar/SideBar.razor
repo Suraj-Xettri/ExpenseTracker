@@ -6,21 +6,29 @@
     <nav class="text-xl">
         <ul class="space-y-4">
             <li>
-                <a href="#" class="text-red-500 flex items-center"> Dashboard </a>
+                <NavLink href="dashboard" class="text-gray-700 flex items-center" active-class="text-red-500 font-bold">
+                    Dashboard
+                </NavLink>
             </li>
             <li>
-                <a href="#" class="text-gray-700 flex items-center">
+                <NavLink href="mywallet" class="text-gray-700 flex items-center" active-class="text-red-500 font-bold">
                     My Wallet
-                </a>
+                </NavLink>
             </li>
             <li>
-                <a href="#" class="text-gray-700 flex items-center">
+                <NavLink href="transation" class="text-gray-700 flex items-center" active-class="text-red-500 font-bold">
                     Transactions
-                </a>
+                </NavLink>
             </li>
             <li>
-                <a href="#" class="text-gray-700 flex items-center"> Settings </a>
+                <NavLink href="settings" class="text-gray-700 flex items-center" active-class="text-red-500 font-bold">
+                    Settings
+                </NavLink>
             </li>
         </ul>
     </nav>
+
+    <div>
+        Logout
+    </div>
 </div>

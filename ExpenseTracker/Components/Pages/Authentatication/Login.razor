@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using ExpenseTracker.Models
 @inject NavigationManager NavigationManager
+@inject GlobalState GlobalState
 
 <div class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="bg-gray-200 w-3/4 md:w-2/3 flex rounded-lg overflow-hidden">
@@ -14,31 +15,31 @@
             <EditForm Model="loginDetails" OnValidSubmit="HandleLogin">
                 <div class="mb-4">
                     <label for="username"
-                           class="block text-sm font-medium text-gray-600 mb-1">Username</label>
+                    class="block text-sm font-medium text-gray-600 mb-1">Username</label>
                     <input type="text"
-                           id="username"
-                           @bind="loginDetails.UserName"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Enter your username" />
+                    id="username"
+                    @bind="loginDetails.UserName"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter your username" />
                 </div>
                 <div class="mb-4">
                     <label for="password"
-                           class="block text-sm font-medium text-gray-600 mb-1">Password</label>
+                    class="block text-sm font-medium text-gray-600 mb-1">Password</label>
                     <input type="password"
-                           id="password"
-                           @bind="loginDetails.Password"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="********" />
+                    id="password"
+                    @bind="loginDetails.Password"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="********" />
                 </div>
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center">
                         <input type="checkbox"
-                               class="text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 rounded" />
+                        class="text-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-0 rounded" />
                         <span class="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
                 </div>
                 <button type="submit"
-                        class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                class="w-full bg-red-500 text-white py-2 rounded-md text-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
                     Sign In
                 </button>
             </EditForm>
@@ -54,8 +55,8 @@
         <!-- Right Section -->
         <div class="hidden md:block w-1/2 p-6">
             <img src="https://via.placeholder.com/400"
-                 alt="Illustration"
-                 class="w-full h-full object-cover" />
+            alt="Illustration"
+            class="w-full h-full object-cover" />
         </div>
     </div>
 </div>
@@ -71,8 +72,8 @@
             // Authenticate using the UserService
             UserModel authenticatedUser = UserService.Login(loginDetails.UserName, loginDetails.Password);
 
-            // Save the authenticated user to GlobalState (if applicable)
-            GlobalState globalState = new GlobalState { CurrentUser = authenticatedUser };
+            // Save the authenticated user to GlobalState
+            GlobalState.SetCurrentUser(authenticatedUser);
 
             // Navigate to dashboard after successful login
             NavigationManager.NavigateTo("/dashboard");
